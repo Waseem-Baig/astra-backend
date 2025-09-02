@@ -32,13 +32,20 @@ app.use("/api/services", servicesRoutes);
 const offersRoutes = require("./routes/offers");
 app.use("/api/offers", offersRoutes);
 
+// Authentication routes
+const authRoutes = require("./routes/auth");
+app.use("/api/auth", authRoutes);
+
 // Admin Products CRUD API route
 const adminProductsRoutes = require("./routes/adminProducts");
 const adminServicesRoutes = require("./routes/adminServices");
 const adminOffersRoutes = require("./routes/adminOffers");
-app.use("/api/admin/products", adminProductsRoutes);
-app.use("/api/admin/services", adminServicesRoutes);
-app.use("/api/admin/offers", adminOffersRoutes);
+const authenticateAdmin = require("./middleware/auth");
+
+// Protected admin routes
+app.use("/api/admin/products", authenticateAdmin, adminProductsRoutes);
+app.use("/api/admin/services", authenticateAdmin, adminServicesRoutes);
+app.use("/api/admin/offers", authenticateAdmin, adminOffersRoutes);
 
 app.get("/", (req, res) => {
   res.send("Astra Backend is running");
