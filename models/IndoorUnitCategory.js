@@ -1,16 +1,17 @@
 const mongoose = require("mongoose");
 
-const IndoorUnitSchema = new mongoose.Schema({
-  name: String,
-  model: String,
-  capacity: String,
-  features: [String],
-  applications: [String],
-});
-
+// Schema to match frontend expectations
 const IndoorUnitCategorySchema = new mongoose.Schema({
   category: String,
-  units: [IndoorUnitSchema],
+  units: [
+    {
+      name: String,
+      model: String,
+      capacity: String,
+      features: [String],
+      applications: [String],
+    },
+  ],
 });
 
 module.exports = mongoose.model("IndoorUnitCategory", IndoorUnitCategorySchema);
