@@ -32,8 +32,16 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { id: admin._id, username: admin.username },
       process.env.JWT_SECRET || "your-secret-key",
-      { expiresIn: "24h" }
+      { expiresIn: "7d" } // 7 days to match frontend cookie expiry
     );
+
+    // Set secure cookie
+    res.cookie("adminToken", token, {
+      httpOnly: true, // Prevent XSS attacks
+      secure: process.env.NODE_ENV === "production", // HTTPS only in production
+      sameSite: "strict", // CSRF protection
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+    });
 
     res.json({
       message: "Login successful",
@@ -74,8 +82,13 @@ router.get("/verify", async (req, res) => {
   }
 });
 
-// Logout (client-side will remove token)
+// Logout route
 router.post("/logout", (req, res) => {
+  res.clearCookie("adminToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
   res.json({ message: "Logout successful" });
 });
 

@@ -10,6 +10,7 @@ const IndoorUnitCategorySchema = new mongoose.Schema({
       capacity: String,
       features: [String],
       applications: [String],
+      image: String, // Base64 encoded image for individual units
     },
   ],
 });

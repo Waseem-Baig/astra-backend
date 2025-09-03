@@ -3,7 +3,12 @@ const Admin = require("../models/Admin");
 
 const authenticateAdmin = async (req, res, next) => {
   try {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    // Try to get token from Authorization header first, then from cookies
+    let token = req.header("Authorization")?.replace("Bearer ", "");
+
+    if (!token) {
+      token = req.cookies?.adminToken;
+    }
 
     if (!token) {
       return res

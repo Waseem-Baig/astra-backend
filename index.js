@@ -2,10 +2,22 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const app = express();
-app.use(express.json());
-app.use(cors());
+app.use(express.json({ limit: "50mb" })); // Increase JSON payload limit
+app.use(express.urlencoded({ extended: true, limit: "50mb" })); // Increase URL-encoded payload limit
+app.use(express.raw({ limit: "50mb", type: "application/octet-stream" })); // Handle raw binary data
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: ["http://localhost:8080", "http://127.0.0.1:8080"], // Frontend URLs
+    credentials: true, // Allow cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    exposedHeaders: ["Set-Cookie"],
+  })
+);
 
 // MongoDB connection
 mongoose
